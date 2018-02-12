@@ -8,7 +8,7 @@
         Title="Dummy timer"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterScreen"
-        Width="430"
+        Width="442"
         Height="250"
         ResizeMode="CanMinimize">
 
