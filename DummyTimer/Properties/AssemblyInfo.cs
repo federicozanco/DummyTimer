@@ -8,9 +8,9 @@ using System.Windows;
 // set di attributi. Modificare i valori di questi attributi per modificare le informazioni
 // associate a un assembly.
 [assembly: AssemblyTitle("DummyTimer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Really dummy timer application")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Federico Zanco")]
 [assembly: AssemblyProduct("DummyTimer")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
