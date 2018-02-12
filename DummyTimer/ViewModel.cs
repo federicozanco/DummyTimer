@@ -38,7 +38,7 @@ namespace DummyTimer
     /// <seealso cref="INotifyPropertyChanged" />
     public class ViewModel : IdLabelValue, IDisposable
     {
-        #region #ILog
+        #region ILog
         private ILog _logger { get { return LogManager.GetLogger(GetType()); } }
         #endregion
 
