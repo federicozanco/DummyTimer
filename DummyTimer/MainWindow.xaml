@@ -5,8 +5,150 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DummyTimer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Dummy timer"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterScreen"
+        Width="430"
+        Height="250"
+        ResizeMode="CanMinimize">
+
+    <Window.DataContext>
+        <local:ViewModel />
+    </Window.DataContext>
+
+    <Window.InputBindings>
+        <KeyBinding Key="S"
+                    Command="{Binding StartStopCommand}" />
+    </Window.InputBindings>
+
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- StartStop -->
+        <Button Grid.Column="0" Content="{Binding StartStopCommandLabel}" Command="{Binding StartStopCommand}" MinWidth="100" Margin="5" />
         
+        <!-- Timespan -->
+        <ComboBox Grid.Column="1"
+                  Name="TimeSpanComboBox"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Center"
+                  HorizontalContentAlignment="Right"
+                  ItemsSource="{Binding TimeSpans}"
+                  SelectedItem="{Binding SelectedTimeSpan}"
+                  DisplayMemberPath="Label"
+                  SelectedValuePath="Id"
+                  MinWidth="150"
+                  Margin="5" />
+        <Label Grid.Column="2" Name="RemainingTimeLabel" HorizontalAlignment="Center" Margin="5" />
+
+        <!-- Custom -->
+        <Label Grid.Row="1" Grid.Column="0" Content="Custom" HorizontalAlignment="Right" Margin="5" />
+        <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Days -->
+            <ComboBox   Grid.Column="0"
+                        Name="CustomDaysComboBox"
+                        HorizontalAlignment="Left"
+                        VerticalContentAlignment="Center"
+                        HorizontalContentAlignment="Right"
+                        ItemsSource="{Binding Days}"
+                        SelectedItem="{Binding SelectedCustomDay}"
+                        IsEnabled="{Binding IsCustomTimespanSelected}"
+                        DisplayMemberPath="Label"
+                        SelectedValuePath="Id"
+                        MinWidth="50"
+                        Tag="DD"
+                        Margin="5" />
+
+            <!-- Hours -->
+            <ComboBox   Grid.Column="1"
+                        Name="CustomHoursComboBox"
+                        HorizontalAlignment="Left"
+                        VerticalContentAlignment="Center"
+                        HorizontalContentAlignment="Right"
+                        ItemsSource="{Binding Hours}"
+                        SelectedItem="{Binding SelectedCustomHour}"
+                        IsEnabled="{Binding IsCustomTimespanSelected}"
+                        DisplayMemberPath="Label"
+                        SelectedValuePath="Id"
+                        MinWidth="50"
+                        Tag="HH"
+                        Margin="5" />
+
+            <!-- Minutes -->
+            <ComboBox   Grid.Column="2"
+                        Name="CustomMinutesComboBox"
+                        HorizontalAlignment="Left"
+                        VerticalContentAlignment="Center"
+                        HorizontalContentAlignment="Right"
+                        ItemsSource="{Binding Minutes}"
+                        SelectedItem="{Binding SelectedCustomMinute}"
+                        IsEnabled="{Binding IsCustomTimespanSelected}"
+                        DisplayMemberPath="Label"
+                        SelectedValuePath="Id"
+                        MinWidth="50"
+                        Tag="mm"
+                        Margin="5" />
+
+            <!-- Seconds -->
+            <ComboBox   Grid.Column="3"
+                        Name="CustomSecondsComboBox"
+                        HorizontalAlignment="Left"
+                        VerticalContentAlignment="Center"
+                        HorizontalContentAlignment="Right"
+                        ItemsSource="{Binding Seconds}"
+                        SelectedItem="{Binding SelectedCustomSecond}"
+                        IsEnabled="{Binding IsCustomTimespanSelected}"
+                        DisplayMemberPath="Label"
+                        SelectedValuePath="Id"
+                        MinWidth="50"
+                        Tag="ss"
+                        Margin="5" />
+
+            <!-- Milliseconds -->
+            <ComboBox   Grid.Column="4"
+                        Name="CustomFractionsComboBox"
+                        HorizontalAlignment="Left"
+                        VerticalContentAlignment="Center"
+                        HorizontalContentAlignment="Right"
+                        ItemsSource="{Binding Milliseconds}"
+                        SelectedItem="{Binding SelectedCustomMillisecond}"
+                        IsEnabled="{Binding IsCustomTimespanSelected}"
+                        DisplayMemberPath="Label"
+                        SelectedValuePath="Id"
+                        MinWidth="50"
+                        Tag="ms"
+                        Margin="5" />
+        </Grid>
+
+        <!-- Countdown -->
+        <Label Grid.Row="2" Grid.Column="0" Content="Countdown" HorizontalAlignment="Right" Margin="5" />
+        <Label Grid.Row="2" Grid.Column="1" Content="{Binding CountdownLabel}" HorizontalAlignment="Center" Margin="5" />
+        
+        <!-- TextToShow -->
+        <TextBox Grid.Column="0"
+                 Grid.ColumnSpan="3"
+                 Grid.Row="3"
+                 Name="TextToShowTextBox"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"
+                 Text="{Binding Label}"
+                 Margin="5" />
     </Grid>
 </Window>
