@@ -23,6 +23,7 @@ using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Media;
 using System.Windows;
 using System.Windows.Threading;
 using ToastNotifications;
@@ -106,6 +107,8 @@ namespace DummyTimer
 
             cfg.Dispatcher = Application.Current.Dispatcher;
         });
+
+        private bool isMuted = false;
         #endregion
 
         #region Public properties
@@ -120,7 +123,6 @@ namespace DummyTimer
                 Settings.Default.Save();
 
                 _logger.Info("saved text to show [" + value + "]");
-
             }
         }
 
@@ -130,7 +132,7 @@ namespace DummyTimer
         {
             get
             {
-                return ((TimeSpan)_selectedTimeSpan.Value - (DateTime.UtcNow - _startTime)).ToString(@"hh\:mm\:ss\:fff");
+                return (_countdownTimer.Interval - (DateTime.UtcNow - _startTime)).ToString(@"hh\:mm\:ss\:fff");
             }
         }
 
@@ -146,10 +148,10 @@ namespace DummyTimer
             {
                 _selectedTimeSpan = value;
 
+                UpdateCountdownTimer((TimeSpan)value.Value);
+
                 Settings.Default["SelectedTimeSpanId"] = _selectedTimeSpan.Id;
                 Settings.Default.Save();
-
-                _countdownTimer.Interval = (TimeSpan)_selectedTimeSpan.Value;
 
                 NotifyPropertyChanged(() => SelectedTimeSpan);
                 NotifyPropertyChanged(() => IsCustomTimespanSelected);
@@ -158,6 +160,7 @@ namespace DummyTimer
             }
         }
 
+        #region Custom
         public List<IdLabelValue> Days
         {
             get { return _days; }
@@ -288,6 +291,23 @@ namespace DummyTimer
         public bool IsCountdownTimerEnabled { get { return _countdownTimer.IsEnabled; } }
         #endregion
 
+        public bool IsMuted
+        {
+            get { return isMuted; }
+            set
+            {
+                isMuted = value;
+
+                Settings.Default["IsMuted"] = value;
+                Settings.Default.Save();
+
+                _logger.Info("saved IsMuted [" + value + "]");
+
+                NotifyPropertyChanged(() => IsMuted);
+            }
+        }
+        #endregion
+
         #region Delegate commands
         /// <summary>
         /// Gets or sets the start stop command.
@@ -337,11 +357,10 @@ namespace DummyTimer
             if (_selectedTimeSpan == null)
                 SelectedTimeSpan = _timeSpans.First();
 
+            _startTime = DateTime.UtcNow;
             _countdownTimer.Interval = (TimeSpan)_selectedTimeSpan.Value;
             _countdownTimer.IsEnabled = true;
             _countdownTimer.Tick += CountdownTimer_Tick;
-
-            _startTime = DateTime.UtcNow;
 
             _displayTimer.Interval = TimeSpan.FromMilliseconds(DefaultDispalyTimerIntervalMs);
             _displayTimer.IsEnabled = true;
@@ -354,13 +373,32 @@ namespace DummyTimer
         #endregion
 
         #region Private methods
+        private void UpdateCountdownTimer(TimeSpan newInterval)
+        {
+            var remainingTime = _startTime.Add(_countdownTimer.Interval).Subtract(DateTime.UtcNow);
+
+            if ((TimeSpan)_selectedTimeSpan.Value < remainingTime)
+            {
+                _startTime = DateTime.UtcNow;
+                _countdownTimer.Interval = newInterval;
+            }
+
+            _logger.Debug(
+                "START = " + _startTime.ToLongTimeString()
+                + "\tNOW = " + DateTime.UtcNow.ToLongTimeString()
+                + "\tTIMEOUT = " + _startTime.Add(_countdownTimer.Interval).ToLongTimeString()
+                + "\tINTERVAL = " + _countdownTimer.Interval
+                + "\tNEW INTERVAL = " + newInterval);
+        }
+
         private void UpdateCustomTimeSpan()
         {
             var customTimeSpan = new TimeSpan((int)_selectedCustomDay.Value, (int)_selectedCustomHour.Value, (int)_selectedCustomMinute.Value, (int)_selectedCustomSecond.Value, (int)_selectedCustomMillisecond.Value);
             
             if (IsCountdownTimerEnabled)
             {
-                _countdownTimer.Interval = customTimeSpan;
+                UpdateCountdownTimer(customTimeSpan);
+
                 NotifyPropertyChanged(() => SelectedTimeSpan);
             }
 
@@ -375,6 +413,13 @@ namespace DummyTimer
         private void CountdownTimer_Tick(object sender, EventArgs e)
         {
             _startTime = DateTime.UtcNow;
+
+            if (_countdownTimer.Interval.TotalMilliseconds != ((TimeSpan)_selectedTimeSpan.Value).TotalMilliseconds)
+                _countdownTimer.Interval = (TimeSpan)_selectedTimeSpan.Value;
+
+            if (!isMuted)
+                SystemSounds.Hand.Play();
+
             _notifier.ShowInformation(Label);
             _logger.Info("TIMEOUT! " + _selectedTimeSpan + " [" + Label + "]" );
         }

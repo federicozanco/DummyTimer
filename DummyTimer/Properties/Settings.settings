@@ -23,5 +23,8 @@
     <Setting Name="SelectedCustomMillisecondId" Type="System.Int64" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
+    <Setting Name="IsMuted" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

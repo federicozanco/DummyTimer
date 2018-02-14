@@ -37,18 +37,29 @@
         <Button Grid.Column="0" Content="{Binding StartStopCommandLabel}" Command="{Binding StartStopCommand}" MinWidth="100" Margin="5" />
         
         <!-- Timespan -->
-        <ComboBox Grid.Column="1"
-                  Name="TimeSpanComboBox"
-                  HorizontalAlignment="Stretch"
-                  VerticalAlignment="Center"
-                  HorizontalContentAlignment="Right"
-                  ItemsSource="{Binding TimeSpans}"
-                  SelectedItem="{Binding SelectedTimeSpan}"
-                  DisplayMemberPath="Label"
-                  SelectedValuePath="Id"
-                  MinWidth="150"
-                  Margin="5" />
-        <Label Grid.Column="2" Name="RemainingTimeLabel" HorizontalAlignment="Center" Margin="5" />
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox Grid.Column="0"
+                      Name="TimeSpanComboBox"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center"
+                      HorizontalContentAlignment="Right"
+                      ItemsSource="{Binding TimeSpans}"
+                      SelectedItem="{Binding SelectedTimeSpan}"
+                      DisplayMemberPath="Label"
+                      SelectedValuePath="Id"
+                      MinWidth="150"
+                      Margin="5" />
+            <CheckBox   Grid.Column="1"
+                        Content="Mute"
+                        IsChecked="{Binding IsMuted}"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Margin="5" />
+        </Grid>
 
         <!-- Custom -->
         <Label Grid.Row="1" Grid.Column="0" Content="Custom" HorizontalAlignment="Right" Margin="5" />
